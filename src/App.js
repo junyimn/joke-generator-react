@@ -1,25 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import React, { useEffect, useState } from "react";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  const jokeApi = "https://official-joke-api.appspot.com/jokes/random";
+
+  const [joke, setJoke] = useState(null);
+  const [isLoading, setisLoading] = useState(true);
+  useEffect(() => {
+    mansGotJoke();
+  }, []);
+
+  const mansGotJoke = () => {
+    fetch(jokeApi)
+      .then((response) => response.json())
+      .then((data) => {
+        setisLoading(false);
+        return setJoke(data);
+      });
+  };
+
+  const renderJSX = isLoading ? (
+    <h1>Loading...</h1>
+  ) : (
+    <>
+      <h1>{joke ? joke.setup : null}</h1>
+      <p>{joke && joke.punchline}</p>
+      <button onClick={mansGotJoke}>Get joke</button>
+    </>
   );
+
+  return <div className="App">{renderJSX}</div>;
 }
 
 export default App;
